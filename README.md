@@ -80,4 +80,5 @@ Example:
 ```
 
 ### Developer Note
+##### I would not use this on any front end facing items. I would only use this if its behind an Auth service and users are trusted
 I'm continually working on this package in my spare time. I've got bigger plans for this in the future and will try to update this as much as possible.
