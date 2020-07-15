@@ -1,0 +1,23 @@
+{
+  "name": "validationchecker",
+  "version": "1.0.0",
+  "description": "Package used to make validation simpler on the developer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Phillipw27/validationChecker.git"
+  },
+  "keywords": [
+    "form",
+    "validation"
+  ],
+  "author": "Phillip Werner",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Phillipw27/validationChecker/issues"
+  },
+  "homepage": "https://github.com/Phillipw27/validationChecker#readme"
+}
