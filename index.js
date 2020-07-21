@@ -1,3 +1,4 @@
+
 class validationChecker{
     
     
@@ -24,6 +25,7 @@ class validationChecker{
     //Variables needed
     message = "";
     classType = "";
+    error = false;
     //function needed... for some reason putting it above the constructor allows us to access it across the class
     //before, we couldn't
     /**
@@ -82,7 +84,6 @@ class validationChecker{
                     else{
                         classes.split(" ").forEach(val =>{
                             if(checker){
-                                
                                 if(val !== null && val !== ""){
                                     if(val.indexOf('-') > -1){
                                         var under = val.replace(/-/g, '_');
@@ -118,43 +119,65 @@ class validationChecker{
 
     /**
      * 
+     * @param num
      * @param {*} item
      * @param self - references this
      * 
      */
     tl_min(num, item, self){
-        if(item.value.length > num){
-            item.classList.remove('error');
-            self.showResult(item, "", "");
-            return true;
-        }
-        else{
-            self.classType = 'error';
-            item.getAttribute('error-message') ? self.message = item.getAttribute('error-message') : self.message += " Text length must be greater than "+ num;
-            self.showResult(item, self.message, self.classType);
-            return false;
-        }
+        self.possiblyMore('tl-min', num, item, self);
     }
 
     /**
      * 
+     * @param num
      * @param item 
      * @param self - reference this
      * 
      */
     tl_max(num, item, self){
-        if(item.value.length < num){
-            self.showResult(item, "", "");
-            item.classList.remove('error');
-            return true;
+        self.possiblyMore('tl-max', num, item, self);
+    }
+
+    /**
+     * 
+     * @param from
+     * @param num
+     * @param {*} item 
+     * @param {*} self 
+     * 
+     */
+    possiblyMore(from, num, item, self){
+        
+        if(from == 'tl-min'){
+            if(item.value.length > num){
+                item.classList.remove('error');
+                self.showResult(item, "", "");
+                return true;
+            }
+            else{
+                self.classType = 'error';
+                item.getAttribute('error-message') ? self.message = item.getAttribute('error-message') : self.message += " Text length must be greater than "+ num;
+                self.showResult(item, self.message, self.classType);
+                self.error = true;
+                return false;
+            }
         }
-        else{
-            self.classType = 'error';
-            item.getAttribute('error-message') ? self.message = item.getAttribute('error-message') : self.message += " Text length must be less than "+ num;
-            self.showResult(item, self.message, self.classType);
-            return false;
+        if(from == 'tl-max' && !self.error){
+            if(item.value.length < num && item.value.length !== 0){
+                self.showResult(item, "", "");
+                item.classList.remove('error');
+                return true;
+            }
+            else{
+                self.classType = 'error';
+                item.getAttribute('error-message') ? self.message = item.getAttribute('error-message') : self.message += " Text length must be less than "+ num;
+                self.showResult(item, self.message, self.classType);
+                return false;
+            }
         }
     }
+
 
     /**
      * 

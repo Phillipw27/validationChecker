@@ -47,6 +47,16 @@ Here's a regular use case example below. This will make sure that there is a val
  <input  type="text" class="form-control validationChecker tl-min-5">
  <div class="form-text text-muted"></div>
 ```
+If you'd like to specify a maximum length for the text input field then just add the class ```tl-max-(number)```.<br/>
+ ```html
+ <input  type="text" class="form-control validationChecker tl-max-5">
+ <div class="form-text text-muted"></div>
+```
+Hell, if you'd like to do both, go crazy. You just need to add in to the same class ```tl-min-(number)``` and ```tl-max-(number)```.<br/>
+```html
+<input  type="text" class="form-control validationChecker tl-min-5 tl-max-15">
+ <div class="form-text text-muted"></div>
+```
 
 #### Email Fields
 For email fields, just add the class email to the end after validationChecker like below
