@@ -1,6 +1,6 @@
 {
   "name": "validationchecker",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Package used to make validation simpler on the developer",
   "main": "index.js",
   "scripts": {
