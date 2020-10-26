@@ -2,21 +2,12 @@
 validationChecker is a package to help with validation needs.<br/>
 Use ```npm i validationchecker``` to install this into your project.<br/>
 Require the script or put at the top of your main file. In laravel I create a main blade view that contains the all of my meta data, css and js needed for set views. 
-Once you've required the file, you can add <br/> 
+Once you've required/pull in the file, you can add an ID of validationCheck to your form and you should be good to start <br/> 
 ```javascript
-$("form").on("submit", function(e) {
-        var form = this;
-        let validation = new validationChecker(form);
-        if (validation) {
-            if (validation.includes(false)) {
-                return false;
-            } else {
-                return true;
-            }
-        }
-    });
+<form id="validationCheck" action="/" method="post" >
+</form>
 ```
-Once you put this in, ANY form element is accessible to the files. There are multiple options for validation.</br>
+Once you put this in, ANY form element that the script is available on can be accessed. An event listener will be fired when you click submit to pick up on everything. There are multiple options for validation.</br>
 For baisc validation (checking if a field is filled out, checkbox is checked, input has a value) all you have to do is add the class ```validationChecker```. <br/>
 If all you want is this as validation, make sure its the last class in your input/textarea field like in the example below.</br>
 To make sure the error text message is displayed add in a div right below your input/textarea like below.<br/>
