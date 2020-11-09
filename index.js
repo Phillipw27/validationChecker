@@ -67,6 +67,7 @@ validator = (form) => {
             }
         }
     })
+        return arr;
 }
 
 /**
@@ -262,7 +263,7 @@ this.onload = (event) => {
     if (form.length > 0) {
         form.addEventListener('submit', function (e) {
             let value = validator(form);
-            if (value == "false") {
+            if (value.includes(false)) {
                 e.preventDefault();
                 window.scrollTo({
                     top: ((window.document.body.clientHeight - Math.abs(Math.min(...heights)) - window.innerHeight) - 350),
