@@ -1,5 +1,5 @@
 let heights = [];
-validator = (form) => {
+function validator(form){
     var inputs = form.getElementsByTagName('input');
     var select = form.getElementsByTagName('select');
     var textArea = form.getElementsByTagName('textarea');
@@ -8,24 +8,42 @@ validator = (form) => {
 
 
     newArr.forEach((item) => {
-        var checker = false;
         var name = item.getAttribute('name');
         var classes = item.getAttribute('class');
-        console.log(classes);
-        if (classes) {
-            var incoming = classes.split(" ");
-            if (incoming[incoming.length - 1] == "validationChecker" || (incoming[incoming.length - 1] == "error" && incoming[incoming.length - 2] == "validationChecker")) {
+
+        if (classes !== null) {
+            classes = classes.split(" ");
+            if(classes.includes('validationChecker')){
                 if (item.nodeName === "SELECT") {
                     var selectFunc = this["selectFunc"];
-                    if (typeof selectFunc == "function") {
+                    if (typeof selectFunc == "function"){
                         arr.push(selectFunc(item));
                     }
                 }
                 else if (item.nodeName === "INPUT") {
-                    var inputFunc = this["inputFunc"];
-                    if (typeof inputFunc == "function") {
-                        arr.push(inputFunc(item));
+                    let tlmin = classes.findIndex(element => element.includes("tl-min"));
+                    let tlmax = classes.findIndex(element => element.includes("tl-max"));
+                    if(item.type == 'email'){
+                        arr.push(email(item));
                     }
+                    else if (tlmin > 0 || tlmax > 0) {
+                        if (tlmin >= 0 && tlmax >= 0) {
+                            arr.push(tl_min_and_max(classes[tlmin].split("-")[2], item, classes[tlmax].split("-")[2]));
+                        }
+                        else if(tlmin >= 0){
+                            arr.push(tl_min(classes[tlmin].split("-")[2], item));
+                        }
+                        else if (tlmax >= 0) {
+                            arr.push(tl_max(classes[tlmax].split("-")[2], item));
+                        }
+                    }
+                    else {
+                        var inputFunc = this["inputFunc"];
+                        if (typeof inputFunc == "function") {
+                            arr.push(inputFunc(item));
+                        }
+                    }
+    
                 }
                 else if (item.nodeName === "TEXTAREA") {
                     var textAreaFunc = this["textAreaFunc"];
@@ -34,40 +52,10 @@ validator = (form) => {
                     }
                 }
             }
-            else {
-                classes.split(" ").forEach(val => {
-                    if (checker) {
-                        if (val !== null && val !== "") {
-                            if (val.indexOf('-') > -1) {
-                                var under = val.replace(/-/g, '_');
-                                var number = under.replace(/_/g, '');
-                                number = number.match(/[a-z]+|[^a-z]+/gi);
-                                number = number[number.length - 1];
-                                under = under.split('_');
-                                var func = this[under[0] + '_' + under[1]];
-                                if (typeof func == "function") {
-                                    if (number !== undefined) {
-                                        arr.push(func(number, item, self));
-                                    }
-
-                                }
-                            }
-                            else {
-                                var func = this[val];
-                                if (typeof func == "function") {
-                                    arr.push(func(item, self));
-                                }
-                            }
-                        }
-                    }
-                    if (val == "validationChecker") {
-                        checker = true;
-                    }
-                })
-            }
+            
         }
-    })
-        return arr;
+    });
+    return arr;
 }
 
 /**
@@ -75,27 +63,26 @@ validator = (form) => {
  * @param from
  * @param num
  * @param {*} item 
+ * @param max (null or max number in tl-min & tl-max)
  * 
  */
-possiblyMore = (from, num, item) => {
-    console.log(validator);
+possiblyMore = (from, num, item, max = null) => {
     if (from == 'tl-min') {
-        if (item.value.length > num) {
+        if (item.value.length >= num) {
             item.classList.remove('error');
             this.showResult(item, "", "");
             return true;
         }
         else {
             this.classType = 'error';
-            item.getAttribute('error-message') ? this.message = item.getAttribute('error-message') : this.message += " Text length must be greater than " + num;
+            item.getAttribute('error-message') ? this.message = item.getAttribute('error-message') : this.message = " Text length must be greater than " + num;
             this.showResult(item, this.message, this.classType);
             this.error = true;
-            console.log(item.getBoundingClientRect());
             heights.push(item.getBoundingClientRect().y);
             return false;
         }
     }
-    if (from == 'tl-max' && !this.error) {
+    if (from == 'tl-max') {
         if (item.value.length < num && item.value.length !== 0) {
             this.showResult(item, "", "");
             item.classList.remove('error');
@@ -103,7 +90,21 @@ possiblyMore = (from, num, item) => {
         }
         else {
             this.classType = 'error';
-            item.getAttribute('error-message') ? this.message = item.getAttribute('error-message') : this.message += " Text length must be less than " + num;
+            item.getAttribute('error-message') ? this.message = item.getAttribute('error-message') : this.message = " Text length must be less than " + num;
+            this.showResult(item, this.message, this.classType);
+            heights.push(item.getBoundingClientRect().y);
+            return false;
+        }
+    }
+    if(from == 'tl-min-max'){
+        if(item.value.length >= num && item.value.length <= max){
+            this.showResult(item, "", "");
+            item.classList.remove('error');
+            return true;
+        }
+        else{
+            this.classType = 'error';
+            item.getAttribute('error-message') ? this.message = item.getAttribute('error-message') : this.message = " Text length must be greater than " + num + " and less than " + max;
             this.showResult(item, this.message, this.classType);
             heights.push(item.getBoundingClientRect().y);
             return false;
@@ -119,8 +120,6 @@ possiblyMore = (from, num, item) => {
  * 
  */
 tl_min = (num, item) => {
-    console.log(num);
-    console.log(item);
     this.possiblyMore('tl-min', num, item);
 }
 
@@ -132,9 +131,17 @@ tl_min = (num, item) => {
  * 
  */
 tl_max = (num, item) => {
-    console.log(num);
-    console.log(item);
     this.possiblyMore('tl-max', num, item);
+}
+
+/**
+ * 
+ * @param num
+ * @param item
+ * 
+ */
+tl_min_and_max = (min, item, max) =>{
+    this.possiblyMore('tl-min-max', min, item, max);
 }
 
 /**
@@ -151,7 +158,6 @@ showResult = function (item, message, classtype) {
     if (!item.nextElementSibling.className.includes('error')) {
         item.nextElementSibling.className += ' ' + classtype;
     }
-    return true;
 }
 
 /**
@@ -265,18 +271,17 @@ this.onload = (event) => {
             let value = validator(form);
             if (value.includes(false)) {
                 e.preventDefault();
-                window.scrollTo({
-                    top: ((window.document.body.clientHeight - Math.abs(Math.min(...heights)) - window.innerHeight) - 350),
-                    behavior: 'smooth',
-                });
+                //coming soon
+                // window.scrollTo({
+                //     top: ((window.document.body.clientHeight - Math.abs(Math.min(...heights)) - window.innerHeight) - 350),
+                //     behavior: 'smooth',
+                // });
             }
             else {
                 return true;
             }
 
         });
-
-
     }
 }
 
