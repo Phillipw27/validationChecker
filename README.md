@@ -53,7 +53,7 @@ Hell, if you'd like to do both, go crazy. You just need to add in to the same cl
 For email fields, just add the class email to the end after validationChecker like below
 
 ```html
-<input  type="email" class="form-control validationChecker email">
+<input  type="email" class="form-control validationChecker">
 <div class="form-text text-muted"></div>
 ```
 This will actually run the email through a regex script that checks to make sure there is an ```@``` symbol as well as a ```.``` which is more than browsers will do.
