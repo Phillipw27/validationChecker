@@ -120,7 +120,7 @@ possiblyMore = (from, num, item, max = null) => {
  * 
  */
 tl_min = (num, item) => {
-    this.possiblyMore('tl-min', num, item);
+    return this.possiblyMore('tl-min', num, item);
 }
 
 
@@ -131,7 +131,7 @@ tl_min = (num, item) => {
  * 
  */
 tl_max = (num, item) => {
-    this.possiblyMore('tl-max', num, item);
+   return this.possiblyMore('tl-max', num, item);
 }
 
 /**
@@ -141,7 +141,7 @@ tl_max = (num, item) => {
  * 
  */
 tl_min_and_max = (min, item, max) =>{
-    this.possiblyMore('tl-min-max', min, item, max);
+    return this.possiblyMore('tl-min-max', min, item, max);
 }
 
 /**
